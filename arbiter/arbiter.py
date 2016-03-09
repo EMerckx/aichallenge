@@ -247,11 +247,13 @@ class March:
 
 @asyncio.coroutine
 def async_read_line(stream):
-    byteline = yield from stream.readline()
-    line = byteline.decode('utf-8').rstrip()
-    if not line:
-        raise EOFError
-    return line
+    while True:
+        byteline = yield from stream.readline()
+        line = byteline.decode('utf-8').rstrip()
+        if not line:
+            raise EOFError
+        if len(line) > 0 and not line.startswith('#'):
+            return line
 
 
 @asyncio.coroutine
